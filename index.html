@@ -1,0 +1,749 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI 陪伴应用评论语义分析｜猫箱 × 星野 × 筑梦岛</title>
+  <meta name="description" content="中国区 App Store 猫箱、星野、筑梦岛评论的横向语义对比。">
+  <style>
+    :root {
+      --page: #f6f6f4;
+      --paper: #ffffff;
+      --ink: #151515;
+      --muted: #686868;
+      --soft: #e9e9e6;
+      --rule: #c9c9c5;
+      --blue: #315f88;
+      --red: #e97832;
+      --green: #4f9eb7;
+      --orange: #e97832;
+      --purple: #72c5d4;
+      --gray: #7b8187;
+      --light-gray: #b8bab7;
+    }
+    * { box-sizing: border-box; font-family: "Microsoft YaHei", "Microsoft YaHei UI", sans-serif !important; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--page);
+      color: var(--ink);
+      font-family: Inter, "PingFang SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-underline-offset: 4px; }
+    .page { width: min(1320px, calc(100% - 44px)); margin: 0 auto; background: var(--paper); }
+    .inner { padding-inline: clamp(22px, 5vw, 72px); }
+    .masthead {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 20px 0 13px;
+      border-bottom: 2px solid var(--ink);
+      font-size: 13.2px;
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+    .hero { padding: 70px 0 52px; border-bottom: 1px solid var(--ink); }
+    .kicker, .section-no { color: var(--blue); font-size: 13.2px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+    h1, h2, h3, h4 { margin: 0; font-family: Georgia, "Noto Serif SC", "Songti SC", serif; font-weight: 500; line-height: 1.12; }
+    h1 { margin-top: 15px; font-size: clamp(33.6px, 5.25vw, 70px); letter-spacing: -.055em; }
+    h2 { font-size: clamp(34px, 4.5vw, 58px); letter-spacing: -.035em; }
+    h3 { font-size: 27px; }
+    .deck { max-width: 900px; margin: 26px 0 0; color: #343434; font-size: clamp(20.4px, 2.4vw, 26.4px); }
+    .hero-meta { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 48px; border-top: 1px solid var(--rule); }
+    .hero-meta > div { padding: 17px 16px 7px 0; border-right: 1px solid var(--rule); }
+    .hero-meta > div:not(:first-child) { padding-left: 16px; }
+    .hero-meta > div:last-child { border-right: 0; }
+    .meta-label { display: block; color: var(--muted); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; }
+    .meta-value { display: block; margin-top: 5px; font-size: clamp(31.2px, 3.6vw, 45.6px); line-height: 1.05; }
+    .meta-note { display: block; margin-top: 7px; color: var(--muted); font-size: 13.2px; }
+    .toc { display: flex; flex-wrap: wrap; gap: 9px 26px; padding: 17px 0; border-bottom: 1px solid var(--rule); font-size: 14.4px; }
+    .toc a { text-decoration: none; }
+    .toc a:hover, .toc a:focus-visible { color: var(--blue); text-decoration: underline; }
+    .scope-alert { margin-top: 28px; padding: 17px 19px; border: 1px solid var(--ink); background: #f1f1ef; font-size: 14.4px; }
+    .scope-alert b { margin-right: 10px; color: var(--red); letter-spacing: .08em; }
+    section { padding: 66px 0; border-bottom: 1px solid var(--ink); }
+    .section-head { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 22px; align-items: start; margin-bottom: 38px; }
+    .compare-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
+    .app-column { min-width: 0; border-top: 3px solid var(--ink); padding-top: 15px; }
+    .app-column[data-app="猫箱"] { --app-color: #e97832; }
+    .app-column[data-app="星野"] { --app-color: #e6b957; }
+    .app-column[data-app="筑梦岛"] { --app-color: #315f88; }
+    .column-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 18px; }
+    .column-head b { color: var(--app-color); font-size: 26.4px; font-weight: 500; }
+    .caption { margin: 12px 0 0; color: var(--muted); font-size: 13.2px; }
+    .executive-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); border-top: 2px solid var(--ink); border-bottom: 1px solid var(--ink); }
+    .executive-card { padding: 20px 20px 24px 0; }
+    .executive-card + .executive-card { padding-left: 20px; border-left: 1px solid var(--rule); }
+    .executive-card span { color: var(--muted); font-size: 9px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+    .executive-card h3 { margin-top: 9px; font-size: 21px; }
+    .executive-card p { margin: 10px 0 0; color: #3c3c3c; font-size: 11px; }
+    .clean-track, .bar-track, .star-track { background: var(--soft); }
+    .clean-track { height: 20px; margin: 15px 0 10px; }
+    .clean-fill { height: 100%; background: var(--app-color); }
+    .clean-counts { display: flex; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 13.2px; }
+    .removed-list { margin: 16px 0 0; padding: 0; list-style: none; border-top: 1px solid var(--rule); }
+    .removed-list li { display: flex; justify-content: space-between; gap: 14px; padding: 9px 0; border-bottom: 1px solid var(--rule); font-size: 14.4px; }
+    .sensitivity-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 28px; margin-top: 34px; }
+    .sensitivity-panel { border-top: 2px solid var(--ink); padding-top: 13px; }
+    .sensitivity-panel h4 { color: var(--app-color); font-size: 20px; }
+    .sensitivity-row { display: grid; grid-template-columns: 105px minmax(0,1fr) 80px; gap: 9px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--rule); font-size: 10px; }
+    .sensitivity-track { height: 12px; background: var(--soft); }
+    .sensitivity-fill { height: 100%; background: var(--app-color); }
+    .sensitivity-value { text-align: right; font-variant-numeric: tabular-nums; }
+    .sentiment-row { padding: 13px 0 17px; border-bottom: 1px solid var(--rule); }
+    .sentiment-main { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; margin-bottom: 11px; }
+    .sentiment-main strong { font-size: 42px; font-weight: 500; }
+    .sentiment-main span { color: var(--muted); font-size: 13.2px; }
+    .stack { display: flex; height: 31px; overflow: hidden; }
+    .seg { display: grid; place-items: center; min-width: 0; color: white; font-size: 10px; font-variant-numeric: tabular-nums; }
+    .seg.neg { background: var(--red); }
+    .seg.mid { background: #f2d36b; color: var(--ink); }
+    .seg.pos { background: var(--green); }
+    .star-row { display: grid; grid-template-columns: 28px minmax(0, 1fr) 34px; gap: 8px; align-items: center; margin: 8px 0; font-size: 11px; }
+    .star-track { height: 10px; }
+    .star-fill { height: 100%; background: var(--app-color); }
+    .trend-stack { display: grid; gap: 42px; }
+    .trend-card { border-top: 2px solid var(--ink); padding-top: 16px; }
+    .trend-head { display: flex; justify-content: space-between; gap: 20px; align-items: baseline; }
+    .trend-head h3 { color: var(--app-color); }
+    .trend-head span { color: var(--muted); font-size: 12px; }
+    .trend-layout { display: grid; grid-template-columns: minmax(520px,1.35fr) minmax(330px,.65fr); gap: 34px; align-items: start; margin-top: 18px; }
+    .trend-chart { display: block; width: 100%; min-width: 520px; aspect-ratio: 720/250; }
+    .trend-chart text { font-family: Inter, "PingFang SC", sans-serif; }
+    .trend-legend { display: flex; gap: 20px; margin-top: 8px; color: var(--muted); font-size: 10px; }
+    .trend-legend span::before { content:""; display:inline-block; width:17px; height:2px; margin:0 6px 3px 0; background:var(--legend); }
+    .version-table { width: 100%; border-collapse: collapse; }
+    .version-table th, .version-table td { padding: 8px 6px; border-bottom: 1px solid var(--rule); text-align: right; font-size: 8px; }
+    .version-table th { color: var(--muted); border-top: 2px solid var(--ink); }
+    .version-table th:first-child, .version-table td:first-child, .version-table td:last-child { text-align: left; }
+    .cloud-stack { display: grid; gap: 46px; }
+    .cloud-stack .app-column { padding-top: 18px; }
+    .cloud-stack .column-head { margin-bottom: 8px; }
+    .wordcloud { display: block; width: 100%; aspect-ratio: 900/390; }
+    .wordcloud text { dominant-baseline: middle; text-anchor: middle; font-family: "PingFang SC", "Microsoft YaHei", sans-serif; }
+    .issue-row { display: grid; grid-template-columns: minmax(105px, 42%) minmax(60px, 1fr) 63px; gap: 8px; align-items: center; padding: 8px 0; border-top: 1px solid var(--rule); }
+    .issue-row:last-child { border-bottom: 1px solid var(--rule); }
+    .issue-name { font-size: 11px; line-height: 1.35; }
+    .bar-track { height: 13px; }
+    .bar-fill { height: 100%; background: var(--app-color); }
+    .issue-value { text-align: right; font-size: 10px; font-variant-numeric: tabular-nums; }
+    .heatmap-wrap { overflow-x: auto; }
+    .heatmap { width: 100%; min-width: 680px; border-collapse: collapse; }
+    .heatmap th, .heatmap td { padding: 11px 13px; border-bottom: 1px solid var(--rule); text-align: right; font-size: 9.6px; }
+    .heatmap th { border-top: 2px solid var(--ink); }
+    .heatmap th:first-child, .heatmap td:first-child { width: 34%; text-align: left; }
+    .impact-list { border-top: 2px solid var(--ink); }
+    .impact-row { display: grid; grid-template-columns: minmax(170px,1fr) minmax(220px,2fr) 82px 110px; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--rule); font-size: 8.8px; }
+    .impact-axis { position: relative; height: 18px; background: linear-gradient(90deg,#fae7d9 0 50%,#e1f1f5 50% 100%); }
+    .impact-axis::after { content:""; position:absolute; left:50%; top:0; bottom:0; width:1px; background:#8a8a86; }
+    .impact-bar { position:absolute; top:4px; height:10px; background:var(--red); }
+    .impact-row b { text-align: right; font-family: Georgia,serif; font-size:12.8px; font-weight:500; }
+    .impact-row small { color:var(--muted); text-align:right; }
+    .cooccur-controls { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-bottom: 22px; border-bottom: 1px solid var(--rule); }
+    .cooccur-control { appearance: none; padding: 8px 0 10px; border: 0; border-bottom: 3px solid transparent; background: transparent; color: var(--muted); font: inherit; font-size: 9.6px; cursor: pointer; }
+    .cooccur-control[aria-pressed="true"] { border-bottom-color: var(--ink); color: var(--ink); font-weight: 700; }
+    .cooccur-wrap { overflow-x: auto; }
+    .cooccur-table { width: 100%; min-width: 940px; border-collapse: separate; border-spacing: 3px; table-layout: fixed; }
+    .cooccur-table th { padding: 8px 5px; color: var(--muted); font-size: 10px; font-weight: 500; line-height: 1.3; text-align: center; }
+    .cooccur-table th:first-child { width: 132px; text-align: left; }
+    .cooccur-table tbody th { color: var(--ink); font-size: 11px; text-align: left; }
+    .cooccur-cell { height: 48px; padding: 0; text-align: center; font-size: 10px; font-variant-numeric: tabular-nums; }
+    .cooccur-cell.diagonal { background: var(--soft); color: var(--muted); }
+    .cooccur-legend { display: flex; align-items: center; gap: 9px; margin-top: 13px; color: var(--muted); font-size: 10px; }
+    .association-table { width:100%; margin-top:22px; border-collapse:collapse; }
+    .association-table th, .association-table td { padding:9px 10px; border-bottom:1px solid var(--rule); text-align:right; font-size:8px; }
+    .association-table th { border-top:2px solid var(--ink); color:var(--muted); }
+    .association-table th:first-child, .association-table td:first-child { text-align:left; }
+    .cooccur-ramp { width: 150px; height: 9px; background: linear-gradient(90deg, rgba(114,197,212,.10), rgba(49,95,136,.92)); }
+    .demand-report { background: var(--paper); }
+    .demand-lead { max-width: 960px; margin: -8px 0 38px 114px; color: #343434; font-size: clamp(21.6px, 2.64vw, 32.4px); line-height: 1.55; }
+    .analysis-block { padding: 34px 0 42px; border-top: 2px solid var(--ink); }
+    .analysis-block + .analysis-block { margin-top: 16px; }
+    .analysis-title { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 22px; align-items: start; margin-bottom: 26px; }
+    .analysis-title h3 { font-size: 29px; }
+    .layer-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 28px; }
+    .layer-panel { border-top: 2px solid var(--ink); padding-top: 14px; }
+    .layer-panel h4 { font-size: 22px; }
+    .layer-main { display: flex; justify-content: space-between; gap: 14px; align-items: baseline; margin: 18px 0 13px; }
+    .layer-main strong { color: var(--layer-color, var(--ink)); font-family: Georgia, serif; font-size: 33.6px; font-weight: 500; }
+    .layer-main span { color: var(--muted); font-size: 13.2px; text-align: right; }
+    .layer-app-row { display: grid; grid-template-columns: 52px minmax(0,1fr) 44px; gap: 8px; align-items: center; margin: 9px 0; font-size: 10px; }
+    .layer-track { height: 10px; background: var(--soft); }
+    .layer-fill { height: 100%; background: var(--layer-color, var(--ink)); }
+    .layer-detail-stack { display: grid; gap: 52px; }
+    .layer-detail { border-top: 2px solid var(--ink); padding-top: 18px; }
+    .layer-detail-head { display: flex; justify-content: space-between; gap: 20px; align-items: baseline; margin-bottom: 18px; }
+    .layer-detail-head h4 { font-size: 25px; }
+    .layer-detail-head span { color: var(--muted); font-size: 12px; }
+    .ring-layout { display: block; }
+    .double-ring { display: block; width: 100%; max-width: 940px; margin: 0 auto; aspect-ratio: 900/470; }
+    .double-ring text { font-family: Inter, "PingFang SC", sans-serif; }
+    .feedback-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 28px; }
+    .feedback-panel { border-top: 2px solid var(--ink); padding-top: 15px; }
+    .feedback-panel h4 { color: var(--app-color); font-size: 24px; }
+    .feedback-metrics { display: grid; grid-template-columns: repeat(2,1fr); gap: 15px; margin: 17px 0; }
+    .feedback-metrics span { color: var(--muted); font-size: 10.8px; letter-spacing: .06em; }
+    .feedback-metrics b { display: block; margin-top: 2px; font-size: 30px; font-weight: 500; }
+    .feedback-issues { border-top: 1px solid var(--rule); }
+    .feedback-issue { display: grid; grid-template-columns: minmax(0,1fr) 68px; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--rule); font-size: 12px; }
+    .feedback-panel > p { margin: 14px 0 0; color: #3d3d3d; font-size: 13.2px; }
+    .comparison-table { width: 100%; margin-top: 30px; border-collapse: collapse; }
+    .comparison-table th, .comparison-table td { padding: 15px 13px; border-bottom: 1px solid var(--rule); text-align: right; font-size: 13.2px; }
+    .comparison-table th { border-top: 2px solid var(--ink); color: var(--muted); font-size: 12px; }
+    .comparison-table th:first-child, .comparison-table td:first-child { text-align: left; }
+    .comparison-table td:last-child { text-align: left; }
+    .comparison-summary { margin: 22px 0 0; padding: 18px 0 0; border-top: 1px solid var(--ink); color: #343434; font-size: 18px; line-height: 1.7; }
+    .chart-analysis { display: grid; grid-template-columns: 135px repeat(2, minmax(0,1fr)); gap: 24px; margin-top: 28px; padding: 24px 26px 26px; border: 0; border-left: 4px solid #c6c6c2; background: #f2f2f0; }
+    .chart-analysis-label { color: #555; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+    .chart-analysis-item { min-width: 0; }
+    .chart-analysis-item b { display: block; margin-bottom: 7px; color: var(--muted); font-size: 10.8px; letter-spacing: .1em; text-transform: uppercase; }
+    .chart-analysis-item p { margin: 0; color: #303030; font-size: 13.44px; line-height: 1.65; }
+    .chart-analysis.compact { grid-template-columns: 115px repeat(2, minmax(0,1fr)); gap: 18px; margin-top: 18px; padding: 20px 22px 22px; }
+    .chart-analysis.compact .chart-analysis-item p { font-size: 11.52px; }
+    .appendix-analysis { margin: 15px 0 0 87px; padding-left: 13px; border-left: 2px solid var(--blue); color: #383838; font-size: 11px; line-height: 1.65; }
+    .insight-list { border-top: 1px solid var(--rule); }
+    .insight-row { display: grid; grid-template-columns: 62px minmax(190px,.65fr) minmax(340px,1.45fr) 170px; gap: 20px; align-items: start; padding: 26px 0; border-bottom: 1px solid var(--rule); }
+    .priority-mark { color: var(--red); font-size: 26.4px; }
+    .priority-mark.p1 { color: var(--orange); }
+    .priority-mark.p2 { color: var(--green); }
+    .insight-name h4 { font-size: 20px; }
+    .insight-name p, .insight-copy p { margin: 8px 0 0; color: var(--muted); font-size: 13.2px; line-height: 1.75; }
+    .insight-copy strong { font-size: 15.6px; font-weight: 600; line-height: 1.65; }
+    .insight-copy p b { color: var(--ink); font-weight: 700; }
+    .insight-metrics { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px 15px; }
+    .insight-metrics span { color: var(--muted); font-size: 10.8px; letter-spacing: .08em; text-transform: uppercase; }
+    .insight-metrics b { display: block; margin-top: 2px; font-size: 25.2px; font-weight: 500; }
+    .value-cost-wrap { overflow-x: auto; }
+    .value-cost { display: block; width: 100%; min-width: 760px; aspect-ratio: 900/430; }
+    .value-cost text { font-family: Inter, "PingFang SC", sans-serif; }
+    .table-scroll { overflow-x: auto; }
+    .priority-table, .opportunity-table { width: 100%; border-collapse: collapse; }
+    .priority-table { min-width: 1160px; }
+    .opportunity-table { min-width: 760px; }
+    .priority-table th, .priority-table td, .opportunity-table th, .opportunity-table td { padding: 14px 12px; border-bottom: 1px solid var(--rule); text-align: left; vertical-align: top; font-size: 11px; }
+    .priority-table th, .opportunity-table th { border-top: 2px solid var(--ink); color: var(--muted); font-size: 10px; font-weight: 600; letter-spacing: .06em; }
+    .priority-table td:first-child { width: 45px; font-family: Georgia, serif; font-size: 18px; }
+    .priority-table td:nth-child(2) { width: 50px; font-family: Georgia, serif; font-size: 18px; }
+    .priority-table td:nth-child(3) { width: 180px; font-weight: 600; }
+    .priority-table td:nth-child(4) { width: 160px; font-variant-numeric: tabular-nums; }
+    .priority-table td:nth-child(5) { width: 175px; font-variant-numeric: tabular-nums; }
+    .priority-table td:nth-child(6) { width: 62px; }
+    .priority-table td:nth-child(7) { width: 75px; font-family: Georgia, serif; font-size: 18px; }
+    .priority-track + .priority-track { margin-top: 38px; }
+    .priority-track-head { display:flex; justify-content:space-between; gap:20px; align-items:end; margin-bottom:14px; }
+    .priority-track-head h4 { font-size:22px; }
+    .priority-track-head p { max-width:620px; margin:0; color:var(--muted); font-size:10px; text-align:right; }
+    .opportunity-table td:first-child { width: 185px; font-weight: 600; }
+    .opportunity-table td:last-child { width: 64px; }
+    .direction-list { border-top: 2px solid var(--ink); }
+    .direction-row { display: grid; grid-template-columns: 120px 260px minmax(0,1fr); gap: 24px; padding: 23px 0; border-bottom: 1px solid var(--rule); }
+    .direction-stage { color: var(--blue); font-size: 10px; font-weight: 700; letter-spacing: .08em; }
+    .direction-row h4 { font-size: 19px; }
+    .direction-row p { margin: 0; color: #3d3d3d; font-size: 12px; }
+    .direction-row p + p { margin-top: 8px; color: var(--muted); }
+    .method-line { margin: 20px 0 0; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 10px; }
+    .voice-column blockquote { margin: 0; padding: 20px 0; border-top: 1px solid var(--rule); }
+    .voice-column blockquote:first-of-type { border-top: 2px solid var(--ink); }
+    blockquote p { margin: 0; font-size: 15.36px; line-height: 1.65; }
+    blockquote footer { margin-top: 11px; color: var(--muted); font-size: 12px; }
+    .appendix { background: #f0f0ee; }
+    .appendix-item { padding: 27px 0 31px; border-top: 2px solid var(--ink); }
+    .appendix-item + .appendix-item { margin-top: 38px; }
+    .appendix-title { display: flex; justify-content: space-between; gap: 20px; align-items: baseline; margin-bottom: 18px; }
+    .appendix-title h3 { font-size: 25px; }
+    .appendix-title span { color: var(--muted); font-size: 11px; }
+    .appendix-row { display: grid; grid-template-columns: 74px minmax(0, 1fr) 90px; gap: 13px; align-items: center; margin: 11px 0; }
+    .appendix-app { font-family: Georgia, "Songti SC", serif; font-size: 17px; }
+    .hundred-bar { display: flex; height: 46px; background: #d9d9d6; overflow: hidden; }
+    .hundred-seg { display:grid; place-items:center; min-width: 0; height: 100%; border-right:1px solid rgba(255,255,255,.8); }
+    .hundred-label { padding:0 4px; color:#151515; font-size:9px; font-weight:600; line-height:1.12; text-align:center; overflow:hidden; }
+    .hundred-label small { display:block; font-size:8px; font-weight:500; }
+    .appendix-total { text-align: right; color: var(--muted); font-size: 10px; }
+    .subterm-legend { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 14px; color: #4c4c4c; font-size: 10px; }
+    .subterm-legend span::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: 5px; background: var(--swatch); }
+    .notes { display: grid; grid-template-columns: .8fr 2fr; gap: 38px; }
+    .notes ol { margin: 0; padding-left: 20px; }
+    .notes li { margin-bottom: 12px; color: #3d3d3d; font-size: 14.4px; }
+    .footer { display: flex; justify-content: space-between; gap: 22px; padding: 28px 0 48px; background: var(--paper); color: var(--muted); font-size: 12px; }
+    .loading { padding: 80px; font-family: Georgia, serif; font-size: 28px; }
+    @media (max-width: 900px) {
+      .section-head { grid-template-columns: 70px 1fr; }
+      .hero-meta { grid-template-columns: repeat(2, 1fr); }
+      .hero-meta > div:nth-child(2) { border-right: 0; }
+      .compare-grid { grid-template-columns: 1fr; gap: 38px; }
+      .issue-row { grid-template-columns: 92px minmax(40px, 1fr); }
+      .issue-value { grid-column: 2; }
+      .trend-layout { grid-template-columns: 1fr; }
+      .trend-layout > div:first-child { overflow-x:auto; }
+      .layer-grid, .feedback-grid { grid-template-columns: 1fr; gap: 34px; }
+      .insight-row { grid-template-columns: 52px 1fr; }
+      .insight-copy, .insight-metrics, .evidence-quote { grid-column: 2; }
+      .direction-row { grid-template-columns: 1fr; gap: 8px; }
+      .chart-analysis, .chart-analysis.compact { grid-template-columns: 1fr; gap: 13px; }
+      .chart-analysis-label { margin-bottom: -2px; }
+    }
+    @media (max-width: 720px) {
+      .page { width: 100%; }
+      .hero-meta { grid-template-columns: repeat(2, 1fr); }
+      .hero-meta > div:nth-child(2) { border-right: 0; }
+      .section-head { display: block; }
+      .section-no { display: block; margin-bottom: 8px; }
+      .compare-grid { grid-template-columns: 1fr; gap: 38px; }
+      .executive-grid, .sensitivity-grid { grid-template-columns: 1fr; }
+      .executive-card + .executive-card { padding-left: 0; border-left: 0; border-top: 1px solid var(--rule); }
+      .impact-row { grid-template-columns: 1fr 1.4fr 64px; }
+      .impact-row small { grid-column:2 / -1; text-align:left; }
+      .cloud-stack { gap: 38px; }
+      .demand-lead { margin-left: 0; }
+      .analysis-title { display: block; }
+      .analysis-title h3 { margin-top: 7px; }
+      .layer-grid { grid-template-columns: 1fr; gap: 34px; }
+      .feedback-grid { grid-template-columns: 1fr; gap: 34px; }
+      .insight-row { grid-template-columns: 52px 1fr; }
+      .insight-copy, .insight-metrics { grid-column: 2; }
+      .evidence-quote { grid-column: 2; }
+      .direction-row { grid-template-columns: 1fr; gap: 8px; }
+      .chart-analysis, .chart-analysis.compact { grid-template-columns: 1fr; gap: 13px; }
+      .chart-analysis-label { margin-bottom: -2px; }
+      .notes { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 480px) {
+      .inner { padding-inline: 17px; }
+      .masthead, .footer { flex-direction: column; gap: 5px; }
+      .hero { padding-top: 44px; }
+      .meta-value { font-size: 25px; }
+      .appendix-row { grid-template-columns: 62px minmax(0, 1fr); }
+      .appendix-total { grid-column: 2; }
+      .appendix-analysis { margin-left: 0; }
+      .seg { font-size: 0; }
+    }
+    @media print {
+      :root { --page: #fff; --paper: #fff; }
+      .toc { display: none; }
+      .page { width: 100%; }
+      section { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page" id="report"><div class="loading">正在载入分析数据…</div></main>
+  <script src="data.js"></script>
+  <script>
+    (() => {
+      const data = window.REPORT_DATA;
+      const root = document.getElementById('report');
+      if (!data) { root.innerHTML = '<div class="loading">分析数据未载入。</div>'; return; }
+      const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+      const colors = ['#e97832','#f29a5b','#f2d36b','#f7e8a7','#a9dce4','#72c5d4','#315f88'];
+      const appColors = {'猫箱':'#e97832','星野':'#e6b957','筑梦岛':'#315f88'};
+      const trendColors = {negative:'#e97832', issue:'#315f88'};
+      const retention = (data.meta.clean_total / data.meta.raw_total * 100).toFixed(1);
+
+      function analysisPanel(finding, discussion, implication, compact=false) {
+        return `<div class="chart-analysis${compact?' compact':''}"><div class="chart-analysis-label">Data reading</div><div class="chart-analysis-item"><b>重点发现</b><p>${esc(finding)}</p></div><div class="chart-analysis-item"><b>解释与讨论</b><p>${esc(discussion)}</p></div></div>`;
+      }
+      function cleaningAnalysis() {
+        const ordered = data.apps.slice().sort((a,b)=>a.retention_pct-b.retention_pct);
+        const low = ordered[0], high = ordered[ordered.length-1];
+        const gap = (high.retention_pct-low.retention_pct).toFixed(1);
+        return analysisPanel(
+          `总体保留 ${retention}%（${data.meta.clean_total} / ${data.meta.raw_total}）。${low.app}保留率最低，为 ${low.retention_pct}%；${high.app}最高，为 ${high.retention_pct}%，相差 ${gap} 个百分点。`,
+          `保留率差异主要反映原始评论中的重复、极短文本和低信息模板占比，不应被解释为产品质量差异。清洗后的三组样本规模均超过 500 条，具备横向观察基础。`,
+          `后续占比均以各应用清洗后样本为分母，避免样本量差异放大结论；绝对评论数仅用于判断证据强弱。`
+        );
+      }
+      function sentimentAnalysis() {
+        const best = data.apps.slice().sort((a,b)=>b.average_rating-a.average_rating)[0];
+        const worst = data.apps.slice().sort((a,b)=>b.sentiment['负向'].pct-a.sentiment['负向'].pct)[0];
+        const negGap = (worst.sentiment['负向'].pct-best.sentiment['负向'].pct).toFixed(1);
+        return analysisPanel(
+          `${best.app}均分最高（${best.average_rating.toFixed(2)}），负面占比最低（${best.sentiment['负向'].pct}%）；${worst.app}负面占比最高（${worst.sentiment['负向'].pct}%），两者相差 ${negGap} 个百分点。`,
+          `即使表现相对更好的${best.app}，负面评论仍接近半数，说明三款产品都处于体验摩擦高发区。均分与负面率方向一致，可作为问题强度的交叉校验，但不能单独说明具体成因。`,
+          `产品评估应优先追踪负面占比与具体问题标签的联动变化，而非仅看总星级；短期优化目标是降低集中爆发的 1–2 星体验。`
+        );
+      }
+      function wordCloudAnalysis(app) {
+        const first = app.keywords[0], second = app.keywords[1];
+        const gap = (first.pct-second.pct).toFixed(1);
+        const interpretations = {
+          '猫箱': '“广告”显著高于第二位“记忆”，讨论焦点高度集中在商业化打断，而非泛化的聊天质量。',
+          '星野': '“敏感词”与“聊天”同时居前，表明用户更常在对话过程中感知内容边界，限制并非独立于核心使用场景。',
+          '筑梦岛': '“敏感词”“内容审核”同时进入前三，审核体验呈现多词聚集；“闪退”进入高频词，说明内容规则之外还存在稳定性摩擦。'
+        };
+        const implications = {
+          '猫箱': '优先验证降低会话内广告频次与强制观看，随后再评估记忆改造，避免用模型升级掩盖打断问题。',
+          '星野': '审核提示应与安全改写、继续对话联动，使用户在触发限制后仍能完成原始表达目标。',
+          '筑梦岛': '审核可解释性与崩溃恢复需并行治理，否则创作被规则或系统任一环节截断都会造成资产损失感。'
+        };
+        return analysisPanel(
+          `${first.word}覆盖 ${first.pct}% 的评论，${second.word}为 ${second.pct}%，头部相差 ${gap} 个百分点。`,
+          interpretations[app.app],
+          implications[app.app],
+          true
+        );
+      }
+      function issueAnalysis() {
+        const leaders = data.apps.map(app=>`${app.app}：${app.issues[0].name} ${app.issues[0].pct}%`).join('；');
+        const cat = data.apps.find(app=>app.app==='猫箱');
+        const xing = data.apps.find(app=>app.app==='星野');
+        const island = data.apps.find(app=>app.app==='筑梦岛');
+        return analysisPanel(
+          `三款应用的首要问题分别为${leaders}。猫箱的首要问题占比明显高于另外两款，呈现更强的单点集中。`,
+          `猫箱问题重心是广告与付费打断；星野、筑梦岛则共同指向内容审核，但筑梦岛同时出现界面功能和稳定性问题（${island.issues.find(x=>x.name==='性能与稳定性').pct}%）。相同的低评分背后不是同一类体验。`,
+          `共性能力可统一建设，整改顺序需按产品分流：猫箱先处理商业化，星野先处理审核可恢复，筑梦岛同步补齐审核、编辑与稳定性。`
+        );
+      }
+      function heatmapAnalysis() {
+        const spreads = data.heatmap.map(row => {
+          const values = data.apps.map(app=>Number(row[app.app]||0));
+          const max = Math.max(...values), min = Math.min(...values);
+          return {issue:row.issue, spread:max-min, max, min, leader:data.apps[values.indexOf(max)].app};
+        }).sort((a,b)=>b.spread-a.spread);
+        const first = spreads[0], second = spreads[1];
+        const common = data.heatmap.map(row=>({issue:row.issue,min:Math.min(...data.apps.map(app=>Number(row[app.app]||0)))})).sort((a,b)=>b.min-a.min)[0];
+        return analysisPanel(
+          `跨应用差异最大的是${first.issue}：${first.leader}达到 ${first.max.toFixed(1)}%，极差 ${first.spread.toFixed(1)} 个百分点；其次为${second.issue}，极差 ${second.spread.toFixed(1)} 个百分点。`,
+          `热力图显示问题呈“产品特异性”聚集，而非三款同步升高。三款共同底线问题中，${common.issue}的最低值仍为 ${common.min.toFixed(1)}%，说明它更适合作为基础能力而非单一卖点。`,
+          `新产品应以共同底线能力保证入场资格，再针对竞品异常高值形成差异化；直接套用统一优先级会稀释各产品最强烈的流失诱因。`
+        );
+      }
+      function executiveSummary() {
+        const cat = data.demand_analysis.app_feedback.find(item=>item.app==='猫箱');
+        const xing = data.demand_analysis.app_feedback.find(item=>item.app==='星野');
+        const island = data.demand_analysis.app_feedback.find(item=>item.app==='筑梦岛');
+        const baseline = data.demand_analysis.demands.filter(item=>item.track==='体验底线').sort((a,b)=>a.track_rank-b.track_rank);
+        const moat = data.demand_analysis.demands.filter(item=>item.track==='战略差异化').sort((a,b)=>a.track_rank-b.track_rank);
+        const ratingDriver = data.issue_impact.filter(item=>item.count>=20)[0];
+        return `<div class="executive-grid"><article class="executive-card"><span>样本结论</span><h3>三款产品不是同一种问题</h3><p>猫箱的${esc(cat.top_issues[0].name)}为 ${cat.top_issues[0].pct}%；星野和筑梦岛的${esc(xing.top_issues[0].name)}分别为 ${xing.top_issues[0].pct}% 和 ${island.top_issues[0].pct}%。</p></article><article class="executive-card"><span>体验底线</span><h3>${esc(baseline[0].name)}</h3><p>三款应用等权提及率 ${baseline[0].balanced_pct}%，实施参考分 ${baseline[0].priority_score}。与${esc(baseline[1].name)}构成首轮修复方向。</p></article><article class="executive-card"><span>战略验证</span><h3>${esc(moat[0].name)}</h3><p>等权提及率 ${moat[0].balanced_pct}%。战略能力按需求证据安排验证顺序，不因实现成本高而直接后置。</p></article><article class="executive-card"><span>评分关联</span><h3>${esc(ratingDriver.issue)}</h3><p>提及该问题的评论在应用内平均低 ${Math.abs(ratingDriver.within_app_rating_gap)} 星，是当前样本中与低星关联最强的问题。</p></article></div>`;
+      }
+      function cleaningSensitivity() {
+        const panels = data.apps.map(app => {
+          const rows = app.cleaning_sensitivity.map(item=>`<div class="sensitivity-row"><span>${esc(item.name)}</span><div class="sensitivity-track"><div class="sensitivity-fill" style="width:${item.negative_pct}%"></div></div><span class="sensitivity-value">${item.negative_pct}% · ${item.average_rating}</span></div>`).join('');
+          return `<article class="sensitivity-panel" style="--app-color:${appColors[app.app]}"><h4>${esc(app.app)}</h4>${rows}</article>`;
+        }).join('');
+        const changes = data.apps.map(app=>{const raw=app.cleaning_sensitivity[0], current=app.cleaning_sensitivity[1], symmetric=app.cleaning_sensitivity[2];return {app:app.app, raw:raw.negative_pct, current:current.negative_pct, symmetric:symmetric.negative_pct, swing:Math.max(raw.negative_pct,current.negative_pct,symmetric.negative_pct)-Math.min(raw.negative_pct,current.negative_pct,symmetric.negative_pct)};}).sort((a,b)=>b.swing-a.swing);
+        const largest = changes[0];
+        return `<div class="sensitivity-grid">${panels}</div>${analysisPanel(`三种处理口径下，${largest.app}负面占比最大波动为 ${largest.swing.toFixed(1)} 个百分点；当前清洗结果为 ${largest.current}%。`,`如果应用间排序在原始样本、当前清洗和对称短评过滤下保持一致，方向性结论更稳健；数值变化则反映短评结构对星级分布的影响。`,`跨应用比较以方向和量级为主，不对 1–2 个百分点的小差异做强解释。后续问题分析继续使用当前清洗样本，保证与正文分母一致。`,true)}`;
+      }
+      function trendCard(app) {
+        const series = app.monthly_trend.slice(-12);
+        const eligible = series.filter(item=>item.count>=20);
+        const analysisSeries = eligible.length>=2 ? eligible : series.slice().sort((a,b)=>b.count-a.count).slice(0,Math.min(2,series.length)).sort((a,b)=>a.month.localeCompare(b.month));
+        const x = index => 48 + (series.length<=1?0:index/(series.length-1)*622);
+        const y = value => 205 - Number(value)/100*155;
+        const line = key => series.map((item,index)=>`${x(index).toFixed(1)},${y(item[key]).toFixed(1)}`).join(' ');
+        const grid = [0,25,50,75,100].map(v=>`<line x1="48" y1="${y(v)}" x2="680" y2="${y(v)}" stroke="#dededb"/><text x="39" y="${y(v)+4}" text-anchor="end" font-size="9" fill="#777">${v}%</text>`).join('');
+        const labels = series.map((item,index)=>index%2===0||index===series.length-1?`<text x="${x(index)}" y="230" text-anchor="middle" font-size="9" fill="#777">${esc(item.month.slice(5))}月</text>`:'').join('');
+        const dots = series.map((item,index)=>{const low=item.count<20;return `<circle cx="${x(index)}" cy="${y(item.negative_pct)}" r="${low?2:3.5}" fill="${trendColors.negative}" opacity="${low?.35:1}"><title>${esc(item.month)}：负面 ${item.negative_pct}%，n=${item.count}${low?'（低样本，仅作观察）':''}</title></circle><circle cx="${x(index)}" cy="${y(item.top_issue_pct)}" r="${low?2:3.5}" fill="${trendColors.issue}" opacity="${low?.35:1}"><title>${esc(item.month)}：${esc(item.top_issue)} ${item.top_issue_pct}%，n=${item.count}${low?'（低样本，仅作观察）':''}</title></circle>`;}).join('');
+        const versionItems = app.version_trend.filter(item=>item.count>=10).slice(0,5);
+        const versions = versionItems.length ? versionItems.map(item=>`<tr><td>${esc(item.version)}</td><td>${item.count}</td><td>${item.average_rating}</td><td>${item.negative_pct}%</td><td>${esc(item.top_issue)} ${item.top_issue_pct}%</td></tr>`).join('') : `<tr><td colspan="5">暂无样本量 ≥10 的版本</td></tr>`;
+        const peak = analysisSeries.slice().sort((a,b)=>b.negative_pct-a.negative_pct)[0];
+        const latest = analysisSeries[analysisSeries.length-1], earliest = analysisSeries[0];
+        const change = latest.negative_pct-earliest.negative_pct;
+        const ruleText = eligible.length>=2 ? '月样本 ≥20' : '按样本量最高的两个月';
+        const trendAnalysis = analysisPanel(`${peak.month}负面占比最高，为 ${peak.negative_pct}%（n=${peak.count}）；分析窗口末月较首月${change>=0?'上升':'下降'} ${Math.abs(change).toFixed(1)} 个百分点。`,`趋势判断仅纳入${ruleText}；浅色点为低样本观察值。该处理降低单月少量极端评分放大波动的风险。`,`将负面率与“${latest.top_issue}”同步观察，可用于定位版本回归；版本上线后优先检查两项指标是否同向恶化。`,true);
+        return `<article class="trend-card" style="--app-color:${appColors[app.app]}"><div class="trend-head"><h3>${esc(app.app)}</h3><span>月度星级情绪与首要问题 · 趋势分析 n≥20 · 版本表 n≥10</span></div><div class="trend-layout"><div><svg class="trend-chart" viewBox="0 0 720 250" role="img" aria-label="${esc(app.app)}月度趋势">${grid}<polyline points="${line('negative_pct')}" fill="none" stroke="${trendColors.negative}" stroke-width="3"/> <polyline points="${line('top_issue_pct')}" fill="none" stroke="${trendColors.issue}" stroke-width="3"/>${dots}${labels}</svg><div class="trend-legend"><span style="--legend:${trendColors.negative}">负面评论占比</span><span style="--legend:${trendColors.issue}">${esc(series[series.length-1].top_issue)}提及率</span></div></div><div><table class="version-table"><thead><tr><th>版本</th><th>n</th><th>均分</th><th>负面</th><th>首要问题</th></tr></thead><tbody>${versions}</tbody></table></div></div>${trendAnalysis}</article>`;
+      }
+      function trendSection() { return `<div class="trend-stack">${data.apps.map(trendCard).join('')}</div>`; }
+      function issueImpactChart() {
+        const items = data.issue_impact.filter(item=>item.count>=20).slice(0,10);
+        const maxAbs = Math.max(...items.map(item=>Math.abs(item.within_app_rating_gap)),.1);
+        const rows = items.map(item=>{const width=Math.abs(item.within_app_rating_gap)/maxAbs*50;const left=item.within_app_rating_gap<0?50-width:50;const color=item.within_app_rating_gap<0?'#e97832':'#315f88';return `<div class="impact-row"><span>${esc(item.issue)}</span><div class="impact-axis"><div class="impact-bar" style="left:${left}%;width:${width}%;background:${color}"></div></div><b>${item.within_app_rating_gap>0?'+':''}${item.within_app_rating_gap}</b><small>${item.count} 条 · ${item.app_support}/3 应用</small></div>`;}).join('');
+        const strongest = items[0];
+        const highVolume = items.slice().sort((a,b)=>b.count-a.count)[0];
+        return `<div class="impact-list">${rows}</div><p class="caption">评分差为同一应用内“提及该问题”与“未提及该问题”的平均星级差，再按问题样本量加权；负值越大，问题与低星关系越强。</p>${analysisPanel(`“${strongest.issue}”的应用内加权评分差为 ${strongest.within_app_rating_gap} 星，是当前样本中与低星关系最强的问题；样本量最大的“${highVolume.issue}”覆盖 ${highVolume.count} 条。`,`评分差控制了应用之间的基础评分差异，比单看负面率更适合识别低星驱动因素。但它仍是观察性关联，不能证明问题单独造成评分下降。`,`产品优先级应同时看问题规模和评分差：高频问题决定覆盖面，较大负向评分差用于识别需要优先验证的体验损失。`)}`;
+      }
+
+      function column(app, content) {
+        return `<article class="app-column" data-app="${esc(app.app)}"><div class="column-head"><h3>${esc(app.app)}</h3><b>${app.clean_count}</b></div>${content}</article>`;
+      }
+      function cleanColumn(app) {
+        const reasons = app.removed_reasons.map(x => `<li><span>${esc(x.reason)}</span><b>${x.count}</b></li>`).join('');
+        return column(app, `<div class="clean-track"><div class="clean-fill" style="width:${app.retention_pct}%"></div></div><div class="clean-counts"><span>原始 ${app.raw_count}</span><span>保留 ${app.clean_count}</span><span>${app.retention_pct}%</span></div><ul class="removed-list">${reasons}</ul>`);
+      }
+      function sentimentColumn(app) {
+        const n = app.sentiment['负向'], m = app.sentiment['中性'], p = app.sentiment['正向'];
+        const maxStar = Math.max(...app.stars.map(x => x.count));
+        const stars = app.stars.slice().reverse().map(x => `<div class="star-row"><span>${x.star}星</span><div class="star-track"><div class="star-fill" style="width:${x.count/maxStar*100}%"></div></div><b>${x.count}</b></div>`).join('');
+        return column(app, `<div class="sentiment-row"><div class="sentiment-main"><strong>${app.average_rating.toFixed(2)}</strong><span>平均星级 · 负向 ${n.pct}%</span></div><div class="stack" aria-label="负向${n.pct}%，中性${m.pct}%，正向${p.pct}%"><div class="seg neg" style="width:${n.pct}%">${n.pct}%</div><div class="seg mid" style="width:${m.pct}%">${m.pct}%</div><div class="seg pos" style="width:${p.pct}%">${p.pct}%</div></div></div><div style="margin-top:18px">${stars}</div><p class="caption">橙：1–2 星；黄：3 星；蓝：4–5 星。</p>`);
+      }
+      function cloudColumn(app) {
+        const texts = app.word_cloud.map(word => {
+          const fill = word.rank <= 5 ? colors[word.rank-1] : '#444';
+          const opacity = word.rank <= 15 ? 1 : Math.max(.48, 1 - word.rank*.012);
+          return `<text x="${word.x}" y="${word.y}" font-size="${word.size}" fill="${fill}" opacity="${opacity}"><title>${esc(word.word)}：${word.count} 条（${word.pct}%）</title>${esc(word.word)}</text>`;
+        }).join('');
+        return column(app, `<svg class="wordcloud" viewBox="0 0 900 390" role="img" aria-label="${esc(app.app)}关键词云">${texts}</svg><p class="caption">评论级文档频次；同一评论内重复词只计 1 次。</p>${wordCloudAnalysis(app)}`);
+      }
+      function issueColumn(app) {
+        const rows = app.issues.slice(0,10).map(item => `<div class="issue-row"><div class="issue-name">${esc(item.name)}</div><div class="bar-track"><div class="bar-fill" style="width:${Math.min(100,item.pct/50*100)}%"></div></div><div class="issue-value">${item.count} · ${item.pct}%</div></div>`).join('');
+        return column(app, `${rows}<p class="caption">统一以 50% 为满刻度，便于跨应用比较。</p>`);
+      }
+      function voiceColumn(app) {
+        const quotes = app.issues.slice(0,3).map(item => `<blockquote><p>“${esc(item.quote)}”</p><footer>${esc(item.name)} · ${item.quote_date} · ${item.quote_rating} 星</footer></blockquote>`).join('');
+        return `<article class="app-column voice-column" data-app="${esc(app.app)}"><div class="column-head"><h3>${esc(app.app)}</h3><b>用户原声</b></div>${quotes}</article>`;
+      }
+      function heatmap() {
+        const rows = data.heatmap.slice(0,12).map(row => `<tr><td>${esc(row.issue)}</td>${data.apps.map((app,i) => { const v=Number(row[app.app]||0); const alpha=Math.min(.76,.05+v/70); const rgb=i===0?'233,120,50':i===1?'230,185,87':'49,95,136'; return `<td style="background:rgba(${rgb},${alpha});color:${v>28?'white':'#151515'}">${v.toFixed(1)}%</td>`; }).join('')}</tr>`).join('');
+        return `<div class="heatmap-wrap"><table class="heatmap"><thead><tr><th>归并问题</th>${data.apps.map(a=>`<th>${esc(a.app)}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div>`;
+      }
+      function cooccurrence() {
+        const labels = data.cooccurrence.labels;
+        const controls = data.cooccurrence.views.map((view,index) => `<button type="button" class="cooccur-control" data-cooccur-view="${index}" aria-pressed="${index===0?'true':'false'}">${esc(view.name)} · n=${view.sample_count}</button>`).join('');
+        return `<div class="cooccur-controls" aria-label="切换共现矩阵范围">${controls}</div><div id="cooccur-matrix" aria-live="polite"></div>`;
+      }
+      function renderCooccurrence(viewIndex) {
+        const target = document.getElementById('cooccur-matrix');
+        if (!target) return;
+        const view = data.cooccurrence.views[viewIndex];
+        const labels = data.cooccurrence.labels;
+        const scaleMax = Math.max(data.cooccurrence.scale_max_pct, .1);
+        const rgb = view.name==='猫箱'?'233,120,50':view.name==='星野'?'230,185,87':view.name==='筑梦岛'?'49,95,136':'49,95,136';
+        const rows = labels.map((rowLabel,rowIndex) => {
+          const cells = labels.map((colLabel,colIndex) => {
+            const cell = view.cells[rowIndex][colIndex];
+            if (rowIndex === colIndex) return `<td class="cooccur-cell diagonal" title="${esc(rowLabel)}：${cell.count} 条，提及率 ${cell.pct}%">${cell.pct}%</td>`;
+            const alpha = Math.min(.88,.05 + cell.pct/scaleMax*.83);
+            const color = alpha > .5 ? '#fff' : '#151515';
+            const value = cell.count ? `${cell.pct}%` : '—';
+            return `<td class="cooccur-cell" style="background:rgba(${rgb},${alpha});color:${color}" title="${esc(rowLabel)} × ${esc(colLabel)}：共同出现 ${cell.count} 条，占${esc(view.name)}样本 ${cell.pct}%；Lift ${cell.lift ?? '—'}；Jaccard ${cell.jaccard ?? '—'}">${value}</td>`;
+          }).join('');
+          return `<tr><th scope="row">${esc(rowLabel)}</th>${cells}</tr>`;
+        }).join('');
+        const pairs = [];
+        labels.forEach((left,i)=>labels.forEach((right,j)=>{ if(j>i) pairs.push({left,right,...view.cells[i][j]}); }));
+        pairs.sort((a,b)=>b.pct-a.pct);
+        const first = pairs[0], second = pairs[1];
+        const associations = pairs.filter(item=>item.count>=10&&item.lift!==null).sort((a,b)=>b.lift-a.lift).slice(0,5);
+        const associationRows = associations.map(item=>`<tr><td>${esc(item.left)} × ${esc(item.right)}</td><td>${item.count}</td><td>${item.pct}%</td><td>${item.lift}</td><td>${item.jaccard}</td></tr>`).join('');
+        const strongest = associations[0] || first;
+        const coAnalysis = analysisPanel(
+          `${view.name}样本中共现规模最高的是“${first.left} × ${first.right}”（${first.pct}%）；在共同出现不少于 10 条的组合中，关联强度最高的是“${strongest.left} × ${strongest.right}”（Lift ${strongest.lift}）。`,
+          `共现率容易被高频问题推高；Lift 衡量实际共现相对随机独立情况下的倍数，Jaccard衡量两个问题样本的重叠程度。三项指标需要联合判断。`,
+          `优先联合验证同时具备足够样本量、较高共现率和 Lift 的组合。关联指标用于界定任务链，不代表前一个问题导致后一个问题。`
+        );
+        target.innerHTML = `<div class="cooccur-wrap"><table class="cooccur-table" aria-label="${esc(view.name)}主要问题共现矩阵"><thead><tr><th>问题</th>${labels.map(label=>`<th scope="col">${esc(label)}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div><div class="cooccur-legend"><span>共同提及率</span><span>低</span><span class="cooccur-ramp" aria-hidden="true"></span><span>高 · ${scaleMax.toFixed(1)}%</span><span>对角线为单项提及率</span></div><table class="association-table"><thead><tr><th>关联组合（共同出现不少于 10 条）</th><th>共现数</th><th>共现率</th><th>Lift</th><th>Jaccard</th></tr></thead><tbody>${associationRows}</tbody></table>${coAnalysis}`;
+      }
+      function appendixItem(group, index) {
+        const totals = new Map();
+        group.bars.forEach(bar => bar.subterms.forEach(x => totals.set(x.name,(totals.get(x.name)||0)+x.count)));
+        const labels = [...totals.entries()].sort((a,b)=>b[1]-a[1]).map(x=>x[0]);
+        const rows = group.bars.map(bar => {
+          if (!bar.subterms.length) return `<div class="appendix-row"><div class="appendix-app">${esc(bar.app)}</div><div class="hundred-bar"></div><div class="appendix-total">无命中</div></div>`;
+          const totalMentions = bar.subterms.reduce((sum,x)=>sum+x.count,0);
+          const detailed = bar.subterms.map(x=>({...x,share:x.count/totalMentions*100}));
+          const visible = detailed.filter(x=>x.share>=6);
+          const otherCount = detailed.filter(x=>x.share<6).reduce((sum,x)=>sum+x.count,0);
+          if(otherCount) visible.push({name:'其他细类',count:otherCount,share:otherCount/totalMentions*100});
+          const segs = visible.map((x,i) => `<div class="hundred-seg" style="width:${x.share}%;background:${colors[i%colors.length]}"><span class="hundred-label">${esc(x.name)}<small>${x.share.toFixed(1)}%</small></span><title>${esc(bar.app)} · ${esc(x.name)}：${x.count} 次提及，占细类提及 ${x.share.toFixed(1)}%</title></div>`).join('');
+          return `<div class="appendix-row"><div class="appendix-app">${esc(bar.app)}</div><div class="hundred-bar" role="img" aria-label="${esc(bar.app)}${esc(group.issue)}细类构成">${segs}</div><div class="appendix-total">${bar.issue_count} 条评论</div></div>`;
+        }).join('');
+        const topLabel = labels[0];
+        const topCount = totals.get(topLabel) || 0;
+        const totalNamed = [...totals.values()].reduce((sum,value)=>sum+value,0);
+        const leaderBar = group.bars.slice().sort((a,b)=>b.issue_pct-a.issue_pct)[0];
+        const namedShare = totalNamed ? (topCount/totalNamed*100).toFixed(1) : '0.0';
+        return `<article class="appendix-item"><div class="appendix-title"><h3>${String(index+1).padStart(2,'0')} · ${esc(group.issue)}</h3><span>图内直接标注细类；占比低于 6% 的细类合并为“其他细类”</span></div>${rows}<p class="appendix-analysis"><b>解读：</b>${esc(group.issue)}在${esc(leaderBar.app)}的总体提及率最高（${leaderBar.issue_pct}%）；三款合并的具名细类中，“${esc(topLabel)}”占 ${namedShare}%。优先验证该细类是否驱动主问题。</p></article>`;
+      }
+      function demandLayerPanels() {
+        const layerColors = ['#e97832','#e6b957','#315f88'];
+        return data.demand_analysis.layers.map((layer,index) => {
+          const apps = data.apps.map(app => `<div class="layer-app-row"><span>${esc(app.app)}</span><div class="layer-track"><div class="layer-fill" style="width:${Math.min(100,layer.app_pcts[app.app]/55*100)}%;background:${appColors[app.app]}"></div></div><b>${Number(layer.app_pcts[app.app]).toFixed(1)}%</b></div>`).join('');
+          return `<article class="layer-panel" style="--layer-color:${layerColors[index]}"><h4>${esc(layer.name)}</h4><div class="layer-main"><strong>${layer.pct}%</strong><span>${layer.count} 条评论命中<br>负面 ${layer.negative_pct}% · 均分 ${layer.average_rating}</span></div>${apps}</article>`;
+        }).join('');
+      }
+      function demandOverviewAnalysis() {
+        const layers = data.demand_analysis.layers.slice().sort((a,b)=>b.pct-a.pct);
+        const first = layers[0], second = layers[1];
+        const appLeaders = data.demand_analysis.app_feedback.map(item=>`${item.app}以${item.dominant_layer}为主（${item.layer_pcts[item.dominant_layer]}%）`).join('；');
+        return analysisPanel(
+          `${first.name}覆盖 ${first.pct}% 的有效评论，是${second.name}（${second.pct}%）的 ${(first.pct/second.pct).toFixed(1)} 倍；${appLeaders}。`,
+          `总体高值主要受猫箱的核心体验问题拉动，不能据此推断三款应用都应采用相同投入结构。星野与筑梦岛的内容与规则问题占比更高，产品间差异会改变需求排序。`,
+          `共性路线先守住核心体验连续性；进入单品优化时，应按各应用主导板块分配资源，而不是沿用总体均值。`
+        );
+      }
+      function polar(cx, cy, radius, angle) {
+        return [cx + radius * Math.cos(angle), cy + radius * Math.sin(angle)];
+      }
+      function ringArc(cx, cy, innerRadius, outerRadius, startAngle, endAngle) {
+        const outerStart = polar(cx, cy, outerRadius, startAngle);
+        const outerEnd = polar(cx, cy, outerRadius, endAngle);
+        const innerEnd = polar(cx, cy, innerRadius, endAngle);
+        const innerStart = polar(cx, cy, innerRadius, startAngle);
+        const largeArc = endAngle - startAngle > Math.PI ? 1 : 0;
+        return `M ${outerStart[0].toFixed(2)} ${outerStart[1].toFixed(2)} A ${outerRadius} ${outerRadius} 0 ${largeArc} 1 ${outerEnd[0].toFixed(2)} ${outerEnd[1].toFixed(2)} L ${innerEnd[0].toFixed(2)} ${innerEnd[1].toFixed(2)} A ${innerRadius} ${innerRadius} 0 ${largeArc} 0 ${innerStart[0].toFixed(2)} ${innerStart[1].toFixed(2)} Z`;
+      }
+      function doubleRingLayer(layer, layerIndex) {
+        const ringPalettes = [
+          {inner:'#e97832', outer:['#e97832','#ef8b45','#f3a260','#f6b77e','#fad2ad']},
+          {inner:'#e6b957', outer:['#e6b957','#edc76b','#f2d982','#f6e5a5','#fbf0c9']},
+          {inner:'#72c5d4', outer:['#4facc2','#72c5d4','#93d4df','#b2e1e8','#d1edf1']},
+          {inner:'#315f88', outer:['#315f88','#47769c','#628ead','#85aac0','#aec9d6']}
+        ];
+        const total = layer.keyword_structure.reduce((sum,item)=>sum+item.count,0);
+        let angle = -Math.PI/2;
+        let innerPaths = '', outerPaths = '', innerLabels = '', outerLabels = '';
+        const shortIssue = {'界面操作与功能缺失':'界面与功能','登录、账号与数据':'登录与数据','角色创作与管理':'角色创作','内容审核与敏感词':'内容审核','图片生成与视觉':'图片生成','社区生态与治理':'社区治理','隐私、实名与未成年人':'隐私与实名','记忆与上下文':'记忆上下文','回复质量与重复':'回复质量','人设与角色一致性':'角色一致','付费、会员与定价':'付费定价','额度、能量与限流':'额度限流','性能与稳定性':'稳定性'};
+        const shortSubterm = {'敏感词/违禁词':'敏感词','未成年人模式':'未成年模式','闪退/崩溃':'闪退崩溃','会员定价':'会员定价','频次过高':'频次过高','其他相关表达':'其他','界面/UI/操作':'界面操作','创作者/作者':'创作者','次数限制':'次数限制','上下文遗忘':'上下文遗忘'};
+        layer.keyword_structure.forEach((issue, issueIndex) => {
+          const issueSpan = total ? issue.count/total*Math.PI*2 : 0;
+          const issueEnd = angle + issueSpan;
+          const palette = ringPalettes[issueIndex % ringPalettes.length];
+          innerPaths += `<path d="${ringArc(450,235,62,130,angle,issueEnd)}" fill="${palette.inner}" stroke="#fff" stroke-width="2.5"><title>${esc(issue.name)}：${issue.count} 次问题命中，占本板块问题命中 ${issue.share}%</title></path>`;
+          if(issueSpan>.2){const mid=(angle+issueEnd)/2;const [tx,ty]=polar(450,235,97,mid);const labelColor=issueIndex%ringPalettes.length===3?'#fff':'#151515';innerLabels+=`<text x="${tx.toFixed(1)}" y="${(ty-4).toFixed(1)}" text-anchor="middle" font-size="10" font-weight="700" fill="${labelColor}">${esc(shortIssue[issue.name]||issue.name)}</text><text x="${tx.toFixed(1)}" y="${(ty+10).toFixed(1)}" text-anchor="middle" font-size="9" fill="${labelColor}">${issue.share}%</text>`;}
+          const subTotal = issue.subterms.reduce((sum,item)=>sum+item.count,0);
+          let subAngle = angle;
+          issue.subterms.forEach((subterm, subIndex) => {
+            const subEnd = subAngle + (subTotal ? subterm.count/subTotal*issueSpan : 0);
+            const span = subEnd-subAngle;
+            const fill = palette.outer[subIndex % palette.outer.length];
+            outerPaths += `<path d="${ringArc(450,235,138,202,subAngle,subEnd)}" fill="${fill}" stroke="#fff" stroke-width="2"><title>${esc(issue.name)} / ${esc(subterm.name)}：${subterm.count} 次，占该问题细类提及 ${subterm.share_within_issue}%</title></path>`;
+            if(span>.115){
+              const mid=(subAngle+subEnd)/2;
+              const [tx,ty]=polar(450,235,170,mid);
+              const label=shortSubterm[subterm.name] || (subterm.name.length>7?`${subterm.name.slice(0,7)}…`:subterm.name);
+              const labelColor=issueIndex%ringPalettes.length===3&&subIndex<3?'#fff':'#151515';
+              const fontSize=span>.24?10:8.5;
+              outerLabels += `<text x="${tx.toFixed(1)}" y="${(ty+(span>.24?-3:3)).toFixed(1)}" text-anchor="middle" font-size="${fontSize}" font-weight="700" fill="${labelColor}">${esc(label)}</text>${span>.24?`<text x="${tx.toFixed(1)}" y="${(ty+10).toFixed(1)}" text-anchor="middle" font-size="8.5" fill="${labelColor}">${subterm.share_within_issue}%</text>`:''}`;
+            }
+            subAngle = subEnd;
+          });
+          angle = issueEnd;
+        });
+        const topIssue = layer.keyword_structure[0], topSubterm = layer.top_subterms[0];
+        const layerDiscussion = {
+          '交互与控制': '大类问题集中在界面与功能，但具名细类较分散，说明用户并非只缺一个按钮，而是在搜索、删除、创作入口等多处失去掌控感。',
+          '内容与规则': '审核问题占据板块过半，且“敏感词/违禁词”是最集中的触发语义，表明矛盾核心是边界不可预期及触发后的任务中断。',
+          '核心体验': '广告是最大单项，但只占该板块问题命中的一部分；记忆、付费、额度和稳定性共同构成关系连续性与使用成本。'
+        }[layer.name];
+        const layerImplication = {
+          '交互与控制': '优先设计可发现、可撤回、可恢复的闭环操作，并用任务完成率验证，不宜只做视觉改版。',
+          '内容与规则': '将审核从“拦截器”改造成可解释、可改写、可继续的流程，指标应同时观察触发后继续率与申诉率。',
+          '核心体验': '先减少强制打断并保证会话、记忆和资产可恢复，再提升生成质量，才能直接作用于连续使用。'
+        }[layer.name];
+        const layerAnalysis = analysisPanel(
+          `${topIssue.name}占本板块问题命中的 ${topIssue.share}%；具名细类中“${topSubterm.name}”占 ${topSubterm.share}%。`,
+          layerDiscussion,
+          layerImplication,
+          true
+        );
+        return `<article class="layer-detail" style="--layer-color:${['#e97832','#e6b957','#315f88'][layerIndex]}"><div class="layer-detail-head"><h4>${esc(layer.name)}</h4><span>${layer.issue_mentions_total} 次问题命中 · ${layer.subterm_mentions_total} 次细类提及</span></div><div class="ring-layout"><svg class="double-ring" viewBox="0 0 900 470" role="img" aria-label="${esc(layer.name)}问题与细类关键词双环图"><title>${esc(layer.name)}问题与细类关键词构成</title>${innerPaths}${outerPaths}${innerLabels}${outerLabels}<circle cx="450" cy="235" r="57" fill="#fff"/><text x="450" y="228" text-anchor="middle" font-family="Georgia,serif" font-size="28" fill="#151515">${layer.pct}%</text><text x="450" y="251" text-anchor="middle" font-size="10" fill="#686868">评论命中率</text></svg></div><p class="caption">内环为问题大类，外环为对应细类；关键词直接置于可读扇区，极窄扇区仅保留色块与悬停信息。采用多标签提及次数，不等同于用户人数。</p>${layerAnalysis}</article>`;
+      }
+      function doubleRingLayers() {
+        return `<div class="layer-detail-stack">${data.demand_analysis.layers.map(doubleRingLayer).join('')}</div>`;
+      }
+      function appFeedbackComparison() {
+        const panels = data.demand_analysis.app_feedback.map(item => {
+          const issues = item.top_issues.map(issue=>`<div class="feedback-issue"><span>${esc(issue.name)}</span><b>${issue.pct}%</b></div>`).join('');
+          return `<article class="feedback-panel" style="--app-color:${appColors[item.app]}"><h4>${esc(item.app)}</h4><div class="feedback-metrics"><div><span>平均评分</span><b>${item.average_rating}</b></div><div><span>负面评论</span><b>${item.negative_pct}%</b></div><div><span>主导板块</span><b style="font-size:20.4px">${esc(item.dominant_layer)}</b></div><div><span>正面评论</span><b>${item.positive_pct}%</b></div></div><div class="feedback-issues">${issues}</div><p>${esc(item.summary)}</p></article>`;
+        }).join('');
+        const rows = data.demand_analysis.app_feedback.map(item => `<tr><td style="color:${appColors[item.app]};font-weight:700">${esc(item.app)}</td><td>${item.layer_pcts['交互与控制']}%</td><td>${item.layer_pcts['内容与规则']}%</td><td>${item.layer_pcts['核心体验']}%</td><td>${esc(item.distinctive_issue.name)} ${item.distinctive_issue.pct}%（较另外两款均值 +${item.distinctive_issue.gap_pct_points}pt）</td></tr>`).join('');
+        const bestRated = data.demand_analysis.app_feedback.slice().sort((a,b)=>b.average_rating-a.average_rating)[0];
+        const mostNegative = data.demand_analysis.app_feedback.slice().sort((a,b)=>b.negative_pct-a.negative_pct)[0];
+        const mostInteractive = data.demand_analysis.app_feedback.slice().sort((a,b)=>b.layer_pcts['交互与控制']-a.layer_pcts['交互与控制'])[0];
+        const comparisonAnalysis = analysisPanel(
+          `${bestRated.app}均分最高（${bestRated.average_rating}）且负面占比最低（${bestRated.negative_pct}%）；${mostNegative.app}负面占比最高（${mostNegative.negative_pct}%）；${mostInteractive.app}的交互与控制命中最高（${mostInteractive.layer_pcts['交互与控制']}%）。`,
+          `评分优势不等于问题结构更轻：${bestRated.app}仍有明确的${bestRated.dominant_layer}压力。三款应用的异常高值分别落在不同问题上，说明“AI 陪伴体验差”只是表象，底层机制需要分产品解释。`,
+          `总体证据用于确定新产品的基础盘，单品异常值用于寻找差异化。优先级决策必须同时看总体规模、负面强度和竞品缺口。`
+        );
+        return `<div class="feedback-grid">${panels}</div><div class="table-scroll"><table class="comparison-table"><thead><tr><th>应用</th><th>交互与控制</th><th>内容与规则</th><th>核心体验</th><th>最显著的相对问题</th></tr></thead><tbody>${rows}</tbody></table></div>${comparisonAnalysis}`;
+      }
+      function demandInsightRows() {
+        const explanations = {
+          '低干扰且透明的商业化': '三款应用间提及率差距较大，说明商业化摩擦并非品类必然代价，而与广告插入位置、额度说明和付费权益兑现方式高度相关。用户愿意为更好的模型与长期关系付费，但前提是基础对话不被突然截断。',
+          '可预期且可恢复的内容边界': '该需求同时具有高负面占比和较低平均评分，矛盾集中在规则不可见、误拦截后无解释、原有内容无法恢复。用户真正需要的是边界可理解、修改有路径、剧情能续接，而不是单纯放松审核。',
+          '可控的角色与剧情创作': '三款应用均出现稳定提及，且评分压力低于审核和稳定性问题，说明这更接近高参与用户的效率型需求。完整的编辑链路会直接影响角色资产沉淀、连续创作和作品发布，而不只是增加一个生成入口。',
+          '稳定运行与数据可恢复': '总体提及率不是最高，但负面占比处于高位；闪退、登录失败或记录丢失会同时破坏情感关系和创作资产。此类问题具有低频高损失特征，不能仅按反馈量排在体验优化之后。',
+          '关系连续与角色一致': '记忆、人设和回复质量在评论中被用户作为同一段关系体验评价。猫箱的提及率明显更高，提示连续性短板会随对话深度和关系投入放大；修复目标应从单轮回答质量转向跨会话的一致性。',
+          '多模态表达与社区连接': '该需求提及率与负面占比均低于前述基础问题，平均评分反而更高，说明它当前主要承担体验增益而非止损作用。语音、形象和社区适合在核心对话稳定后分阶段验证，避免扩张功能面却放大治理成本。'
+        };
+        return data.demand_analysis.demands.map(item => {
+          const priorityClass = item.priority.toLowerCase();
+          const appEntries = Object.entries(item.app_pcts).sort((a,b)=>b[1]-a[1]);
+          const high = appEntries[0], low = appEntries[appEntries.length-1];
+          const ratingSignal = item.rating_delta < 0 ? `相关评论平均评分较未提及者低 ${Math.abs(item.rating_delta).toFixed(2)} 分` : `相关评论平均评分较未提及者高 ${item.rating_delta.toFixed(2)} 分`;
+          const dataReading = `总体样本提及率 ${item.pct}%，负面评论占 ${item.negative_pct}%，平均评分 ${item.average_rating} 分；${high[0]}提及率最高（${high[1]}%），${low[0]}最低（${low[1]}%），相差 ${(high[1]-low[1]).toFixed(1)} 个百分点。${ratingSignal}。`;
+          return `<article class="insight-row"><div class="priority-mark ${priorityClass}">#${item.rank}</div><div class="insight-name"><h4>${esc(item.name)}</h4><p>${item.issues.map(esc).join('、')}</p></div><div class="insight-copy"><strong>${esc(item.insight)}</strong><p><b>数据判断：</b>${esc(dataReading)}</p><p><b>需求解释：</b>${esc(explanations[item.name] || '')}</p><p><b>产品转译：</b>${esc(item.direction)}</p></div><div class="insight-metrics"><div><span>负面占比</span><b>${item.negative_pct}%</b></div><div><span>平均评分</span><b>${item.average_rating}</b></div></div></article>`;
+        }).join('');
+      }
+      function valueCostMap() {
+        const items = data.demand_analysis.demands;
+        const xFor = score => score===2 ? 205 : score===2.5 ? 480 : 745;
+        const yFor = pct => 350 - Math.min(40,pct) / 40 * 285;
+        const shortNames = {'关系连续与角色一致':'关系连续','低干扰且透明的商业化':'商业化','可预期且可恢复的内容边界':'内容边界','可控的角色与剧情创作':'创作控制','稳定运行与数据可恢复':'稳定恢复','多模态表达与社区连接':'多模态'};
+        const grid = [0,10,20,30,40].map(v => { const y=yFor(v); return `<line x1="82" y1="${y}" x2="850" y2="${y}" stroke="#d8d8d5" stroke-width="1"/><text x="70" y="${y+4}" text-anchor="end" font-size="10" fill="#686868">${v}%</text>`; }).join('');
+        const points = items.map(item => { const x=xFor(Number(item.cost_score)), y=yFor(Number(item.balanced_pct)); const color=item.track==='体验底线'?'#e97832':'#315f88'; const r=11+Number(item.negative_pct)*.11; return `<g><circle cx="${x}" cy="${y}" r="${r.toFixed(1)}" fill="${color}" fill-opacity=".82"><title>${esc(item.name)}：应用等权提及率 ${item.balanced_pct}%，负面 ${item.negative_pct}%，成本 ${esc(item.cost)}</title></circle><text x="${x+r+7}" y="${y+4}" font-size="11" fill="#151515">${esc(shortNames[item.name]||item.name)}</text></g>`; }).join('');
+        const ranked = items.slice().sort((a,b)=>b.priority_score-a.priority_score);
+        const first = ranked[0], second = ranked[1];
+        const highCost = items.filter(item=>item.cost==='高').sort((a,b)=>b.balanced_pct-a.balanced_pct)[0];
+        const mapAnalysis = analysisPanel(
+          `${first.name}与${second.name}实施参考分最高，分别为 ${first.priority_score} 和 ${second.priority_score}；高成本需求“${highCost.name}”应用等权提及率为 ${highCost.balanced_pct}%。`,
+          `矩阵优先识别“证据强、负面重、相对可落地”的需求，不等同于长期战略价值排序。高成本能力得分受压，表示不适合先做，并非用户不需要。`,
+          `资源配置上可先用商业化与内容边界改造验证留存改善，同时以小范围原型验证高成本的关系连续性，避免在尚未消除基础摩擦前重投入。`
+        );
+        return `<div class="value-cost-wrap"><svg class="value-cost" viewBox="0 0 900 430" role="img" aria-label="应用等权需求提及率与相对实现成本矩阵"><text x="18" y="38" font-size="11" fill="#686868">应用等权提及率</text>${grid}<line x1="82" y1="350" x2="850" y2="350" stroke="#151515" stroke-width="1.5"/><line x1="82" y1="65" x2="82" y2="350" stroke="#151515" stroke-width="1.5"/><text x="205" y="382" text-anchor="middle" font-size="11" fill="#151515">中</text><text x="480" y="382" text-anchor="middle" font-size="11" fill="#151515">中高</text><text x="745" y="382" text-anchor="middle" font-size="11" fill="#151515">高</text><text x="466" y="416" text-anchor="middle" font-size="11" fill="#686868">相对实现成本</text>${points}</svg></div><p class="caption">纵轴为三款应用等权后的需求提及率，圆点大小表示负面评论占比；橙色为体验底线，青色为战略差异化。</p>${mapAnalysis}`;
+      }
+      function priorityTable() {
+        const baseline = data.demand_analysis.demands.filter(item=>item.track==='体验底线').sort((a,b)=>a.track_rank-b.track_rank);
+        const differentiation = data.demand_analysis.demands.filter(item=>item.track==='战略差异化').sort((a,b)=>a.track_rank-b.track_rank);
+        const makeRows = (items,isBaseline) => items.map(item => `<tr><td>${item.track_rank}</td><td>${isBaseline?esc(item.priority):`验证 ${item.track_rank}`}</td><td>${esc(item.name)}</td><td>总体 ${item.pct}%<br>应用等权 ${item.balanced_pct}%</td><td>负面 ${item.negative_pct}%<br>均分 ${item.average_rating} · 较总体 ${item.rating_delta>0?'+':''}${item.rating_delta}</td><td>${esc(item.cost)}</td><td>${isBaseline?item.priority_score:'—'}</td><td>${esc(item.direction)}<br><span style="color:#686868">验证：${esc(item.metric)}</span></td></tr>`).join('');
+        const baselineTable = `<div class="priority-track"><div class="priority-track-head"><h4>体验底线</h4><p>用于安排缺陷和基础体验修复。应用等权提及率进入实施参考分，并结合负面率、评分压力与实现成本。</p></div><div class="table-scroll"><table class="priority-table"><thead><tr><th>顺序</th><th>等级</th><th>产品需求</th><th>需求规模</th><th>星级压力</th><th>成本</th><th>参考分</th><th>产品处理与验证</th></tr></thead><tbody>${makeRows(baseline,true)}</tbody></table></div></div>`;
+        const differentiationTable = `<div class="priority-track"><div class="priority-track-head"><h4>战略差异化</h4><p>用于安排新能力验证。按应用等权需求证据排序，不使用成本调整分替代长期壁垒判断。</p></div><div class="table-scroll"><table class="priority-table"><thead><tr><th>顺序</th><th>阶段</th><th>产品需求</th><th>需求规模</th><th>星级压力</th><th>成本</th><th>参考分</th><th>产品处理与验证</th></tr></thead><tbody>${makeRows(differentiation,false)}</tbody></table></div></div>`;
+        const pooledChanges = data.demand_analysis.demands.filter(item=>item.rank!==item.pooled_rank);
+        const priorityAnalysis = analysisPanel(
+          `体验底线首位是“${baseline[0].name}”（应用等权 ${baseline[0].balanced_pct}%）；战略差异化首个验证方向是“${differentiation[0].name}”（${differentiation[0].balanced_pct}%）。${pooledChanges.length} 项需求在总体加权与应用等权口径下发生名次变化。`,
+          `双轨排序避免低成本修复项挤压长期能力。体验底线回答“先消除什么损失”，战略差异化回答“下一步验证什么能力”，两者不共享同一个最终分数。`,
+          `Roadmap应为两条轨道分别预留资源。底线项用故障和退出指标验收，差异化项先用小范围原型验证持续使用与付费意愿，再决定高成本投入。`
+        );
+        return `${baselineTable}${differentiationTable}${priorityAnalysis}`;
+      }
+      function opportunityTable() {
+        const rows = data.demand_analysis.opportunities.map(item => `<tr><td>${esc(item.name)}</td><td>${esc(item.evidence)}</td><td>${esc(item.opportunity)}</td><td>${esc(item.cost)}</td></tr>`).join('');
+        return `<div class="table-scroll"><table class="opportunity-table"><thead><tr><th>机会点</th><th>竞品反馈证据</th><th>新产品差异化方向</th><th>成本</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+      }
+      function productDirectionRows() {
+        return `<div class="direction-list">${data.demand_analysis.product_directions.map(item => `<article class="direction-row"><div class="direction-stage">${esc(item.stage)}</div><h4>${esc(item.title)}</h4><div><p>${esc(item.scope)}</p><p>${esc(item.decision)}</p></div></article>`).join('')}</div>`;
+      }
+      function demandReport() {
+        const core = data.demand_analysis.layers.find(item=>item.name==='核心体验');
+        const top = data.demand_analysis.demands.slice().sort((a,b)=>b.pct-a.pct)[0];
+        return `<div class="section-head"><div class="section-no">PART II / NEEDS</div><h2>用户反馈解读与需求洞察</h2></div><p class="demand-lead">${core.pct}% 的评论命中核心体验问题。总体样本中提及率最高的需求是“${esc(top.name)}”，为 ${top.pct}%。</p>
+        <div class="analysis-block"><div class="analysis-title"><div class="section-no">01</div><h3>交互、内容与体验问题</h3></div><div class="layer-grid">${demandLayerPanels()}</div>${demandOverviewAnalysis()}</div>
+        <div class="analysis-block" id="demand-keywords"><div class="analysis-title"><div class="section-no">02</div><h3>三个板块的关键词结构</h3></div>${doubleRingLayers()}</div>
+        <div class="analysis-block"><div class="analysis-title"><div class="section-no">03</div><h3>三款应用整体反馈对比</h3></div>${appFeedbackComparison()}</div>
+        <div class="analysis-block"><div class="analysis-title"><div class="section-no">04</div><h3>用户需求洞察</h3></div><div class="insight-list">${demandInsightRows()}</div></div>`;
+      }
+      root.innerHTML = `<div class="inner">
+        <header><div class="masthead"><strong>VOC REVIEW / LOCAL EDITION</strong><span>China App Store · 2026.10.25</span></div>
+        <div class="hero"><div class="kicker">Comparative Semantic Analysis</div><h1>三款 AI 陪伴应用<br>横向评论观察</h1><p class="deck">猫箱、星野与筑梦岛：在同一清洗规则、同一时间窗口与同一问题分类下，对照关键词、星级结构和主要体验摩擦。</p>
+        <div class="hero-meta"><div><span class="meta-label">原始评论</span><span class="meta-value">${data.meta.raw_total.toLocaleString('zh-CN')}</span><span class="meta-note">公开评论样本并集</span></div><div><span class="meta-label">清洗后样本</span><span class="meta-value">${data.meta.clean_total.toLocaleString('zh-CN')}</span><span class="meta-note">整体保留率 ${retention}%</span></div><div><span class="meta-label">应用数量</span><span class="meta-value">3</span><span class="meta-note">独立清洗、并列比较</span></div><div><span class="meta-label">研究窗口</span><span class="meta-value" style="font-size:27.6px">近 12 个月</span><span class="meta-note">${data.meta.window}</span></div></div><div class="scope-alert"><b>样本边界</b>${esc(data.meta.coverage_note)}</div></div>
+        <nav class="toc"><a href="#clean">01 数据清洗</a><a href="#sentiment">02 星级结构</a><a href="#trend">03 时间与版本</a><a href="#cloud">04 关键词云</a><a href="#issue">05 问题频次</a><a href="#heat">06 交叉对照</a><a href="#impact">07 评分影响</a><a href="#cooccur">08 问题共现</a><a href="#voice">09 用户原声</a><a href="#demand">需求分析</a></nav></header>
+
+        <section id="clean"><div class="section-head"><div class="section-no">01 / CLEAN</div><h2>数据清洗</h2></div><div class="compare-grid">${data.apps.map(cleanColumn).join('')}</div>${cleaningAnalysis()}</section>
+        <section id="sentiment"><div class="section-head"><div class="section-no">02 / RATING</div><h2>星级情绪结构</h2></div><div class="compare-grid">${data.apps.map(sentimentColumn).join('')}</div>${sentimentAnalysis()}</section>
+        <section id="trend"><div class="section-head"><div class="section-no">03 / TREND</div><h2>时间与版本变化</h2></div>${trendSection()}</section>
+        <section id="cloud"><div class="section-head"><div class="section-no">04 / WORDS</div><h2>关键词云纵向比较</h2></div><div class="cloud-stack">${data.apps.map(cloudColumn).join('')}</div></section>
+        <section id="issue"><div class="section-head"><div class="section-no">05 / ISSUES</div><h2>主要问题关键词频次</h2></div><div class="compare-grid">${data.apps.map(issueColumn).join('')}</div>${issueAnalysis()}</section>
+        <section id="heat"><div class="section-head"><div class="section-no">06 / MATRIX</div><h2>跨应用问题热力对照</h2></div>${heatmap()}${heatmapAnalysis()}</section>
+        <section id="impact"><div class="section-head"><div class="section-no">07 / RATING GAP</div><h2>问题与低星的关联强度</h2></div>${issueImpactChart()}</section>
+        <section id="cooccur"><div class="section-head"><div class="section-no">08 / CO-OCCURRENCE</div><h2>主要问题共现矩阵</h2></div>${cooccurrence()}</section>
+        <section id="voice"><div class="section-head"><div class="section-no">09 / VOICE</div><h2>高频问题用户原声</h2></div><div class="compare-grid">${data.apps.map(voiceColumn).join('')}</div></section>
+      </div>
+
+      <section class="demand-report" id="demand"><div class="inner">${demandReport()}</div></section>
+
+      <div class="inner"><section id="notes"><div class="section-head"><div class="section-no">NOTES</div><h2>口径与边界</h2></div><div class="notes"><p class="caption">${esc(data.meta.coverage_note)}</p><ol><li>${esc(data.meta.keyword_method)}</li><li>${esc(data.meta.issue_method)}</li><li>${esc(data.meta.sentiment_method)}</li><li>需求洞察同时观察总体样本提及率与三款应用差异，避免单一总体均值掩盖产品特异性。</li><li>共现率、Lift 与 Jaccard只表示问题关联；评分差也不表示因果。</li><li>词云、问题频次和关键词结构均采用评论级去重计数。</li></ol></div></section><footer class="footer"><span>AI Companion VOC · Local Comparative Edition</span><span>数据生成：${data.meta.generated} · 中国区 App Store 公开评论</span></footer></div>`;
+
+      document.querySelectorAll('[data-cooccur-view]').forEach(button => button.addEventListener('click', () => {
+        document.querySelectorAll('[data-cooccur-view]').forEach(item => item.setAttribute('aria-pressed','false'));
+        button.setAttribute('aria-pressed','true');
+        renderCooccurrence(Number(button.dataset.cooccurView));
+      }));
+      renderCooccurrence(0);
+    })();
+  </script>
+</body>
+</html>
